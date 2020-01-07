@@ -1,0 +1,88 @@
+# Dictate when the script should run
+starttime: "06:28"
+endtime: "20:02"
+
+# Days to not run on (Case sensitive, always start with capital letter)
+days_to_not_run_on:
+  - Saturday
+  - Sunday
+
+# options = live, test. Determines where to run. If Auto, will try to run in live if in authorisation list below, otherwise will run in UAT
+environment: live
+
+# on, off. To run in live, set to auto
+slack_toggle: "on"
+
+# on, off. To create jira ticket
+jira_toggle: "on"
+
+# allows users in each list access to the live or test system
+live_users:
+  - live.user
+test_users:
+  - test.user
+
+
+slack-webhooks:
+  live: ""
+  test: ""
+
+live_connections:
+  server: SERVER
+  database: DATABASE
+  driver: "SQL Server"
+  log_table: System_Monitor.SystemMonitorLog
+  results_table: System_Monitor.SystemMonitorResults
+  get_encrypted: "select * from EncryptedValues"
+  get_lastResult: "SELECT TOP 1 result FROM OCTSystemMonitor.System_Monitor.SystemMonitorResults where testname = '%s' order by created DESC"
+  get_lastMessage: "SELECT TOP 1 message FROM OCTSystemMonitor.System_Monitor.SystemMonitorResults where testname = '%s' order by created DESC"
+  get_sessionId: "select CASE WHEN MAX(sessionId) IS NULL THEN '0' ELSE MAX(sessionId) END FROM System_Monitor.systemmonitorlog"
+  get_recentFailures: "SELECT count(*) FROM [OCTSystemMonitor].[System_Monitor].[SystemMonitorResults] where created > DATEADD(HOUR, -3, GETDATE()) and result='failed' and testname = '%s'"
+  insertResult: "INSERT INTO System_Monitor.SystemMonitorResults VALUES ('%s','%s','%s','%s')"
+  logEvent: "INSERT INTO System_Monitor.SystemMonitorLog VALUES ('%s','%s','%s','%s')"
+
+test_connections:
+  server: SERVER
+  database: DATABASE
+  driver: "SQL Server"
+  log_table: System_Monitor.SystemMonitorLog
+  results_table: System_Monitor.SystemMonitorResults
+  get_encrypted: "select * from EncryptedValues"
+  get_lastResult: "SELECT TOP 1 result FROM OCTSystemMonitor.System_Monitor.SystemMonitorResults where testname = '%s' order by created DESC"
+  get_lastMessage: "SELECT TOP 1 message FROM OCTSystemMonitor.System_Monitor.SystemMonitorResults where testname = '%s' order by created DESC"
+  get_sessionId: "select CASE WHEN MAX(sessionId) IS NULL THEN '0' ELSE MAX(sessionId) END FROM System_Monitor.systemmonitorlog"
+  get_recentFailures: "SELECT count(*) FROM [OCTSystemMonitor].[System_Monitor].[SystemMonitorResults] where created > DATEADD(HOUR, -3, GETDATE()) and result='failed' and testname = '%s'"
+  insertResult: "INSERT INTO System_Monitor.SystemMonitorResults VALUES ('%s','%s','%s','%s')"
+  logEvent: "INSERT INTO System_Monitor.SystemMonitorLog VALUES ('%s','%s','%s','%s')"
+
+chromedriver_path: assets/chromedriver.exe
+
+# Application Services
+Application_services:
+  adminUsername: ""
+  adminPassword: ""
+  services:
+    systemname:
+      SERVER:
+        - SERVICE
+  services-exceptions:
+    service name:
+      start: "09:50"
+      end: "14:00"
+
+# Web Systems
+Web_Systems:
+  automated:
+    Website name: "https://url.com/"
+
+# File Count
+File_Count:
+  path: "server/LinkToDirectory"
+  filelimit: 0
+
+# Portfolio Valuations
+Query_Compare:
+  query: "Query"
+  driver: "SQL Server"
+  server: SERVER
+  database: DATABASE
