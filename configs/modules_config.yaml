@@ -1,0 +1,26 @@
+
+app-services:
+  adminUsername: ""
+  adminPassword: ""
+  services:
+    application/area:
+      server:
+        - service_name
+        - another_service
+      another_server:
+        - one_more_service
+  services-exceptions:
+    service_name:
+      start: "09:50"
+      end: "14:00"
+
+
+web-systems:
+  Google: "https://google.co.uk"
+  Reddit: "https://reddit.com"
+
+Locked_Files:
+  creation_delay: 25 #minutes. Doesn't check files created in past X minutes as they could still be open in the application.
+  re_attempt_delay: 30 #seconds. How long it takes before trying a file again after saying it's locked to verify it
+  locations:
+    - "//folderlocation"

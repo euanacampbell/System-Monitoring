@@ -1,0 +1,97 @@
+# Start and endtime
+starttime: "06:28"
+endtime: "20:02"
+
+# Days to not run on (Case sensitive, always start with capital letter)
+days_to_not_run_on:
+  - Saturday
+  - Sunday
+
+# options = live, test. Determines where to run. If Auto, will try to run in live if in authorisation list below, otherwise will run in UAT
+environment: live
+
+# on, off
+teams_toggle: "on"
+
+# on, off. To create jira ticket
+jira_toggle: "on"
+jira_toggle_testoverride: "default" # (default, on) if "on" will allow tickets to be created when running as in test environment
+
+# When to run and when to not
+runtime:
+  default:
+    bankholidays: "No"
+    starttime: "06:28"
+    endtime: "20:02"
+    days_to_not_run_on:
+      - Saturday
+      - Sunday
+  exceptions:
+    test_name:
+      bankholidays: "Yes"
+      starttime: "00:01"
+      endtime: "23:59"
+      days_to_not_run_on: []
+      additionalWebhooks:
+    another_test:
+      bankholidays: "Yes"
+      starttime: "00:01"
+      endtime: "23:59"
+      days_to_not_run_on: []
+      additionalWebhooks:
+
+# Setup alternative message locations that will also be alerted
+alternative_webhooks:
+  test_name:
+    error_message: "message to show when erroring"
+    resolution_message: "message to show when fixed"
+    hooks:
+    - "webhook"
+    - "another webhook"
+  another_test_name:
+    error_message: "message to show when erroring"
+    resolution_message: "message to show when fixed"
+    hooks:
+    - "webhook"
+
+# allows users in each list access to the live or test system
+live_users:
+  - user.name
+test_users:
+  - user.name
+
+teams-connectors:
+  live: "webhook"
+  test: "webhook"
+
+connections:
+  server: 
+    test: test_sql_server
+    live: live_sql_server
+  database: OCTSystemMonitor
+  driver: "SQL Server"
+  log_table: System_Monitor.SystemMonitorLog
+  results_table: System_Monitor.SystemMonitorResults
+  get_encrypted: "select * from EncryptedValues"
+  get_lastResult: "SELECT TOP 1 result FROM OCTSystemMonitor.System_Monitor.SystemMonitorResults where testname = '%s' order by created DESC"
+  get_lastMessage: "SELECT TOP 1 message FROM OCTSystemMonitor.System_Monitor.SystemMonitorResults where testname = '%s' order by created DESC"
+  get_sessionId: "select CASE WHEN MAX(sessionId) IS NULL THEN '0' ELSE MAX(sessionId) END FROM System_Monitor.systemmonitorlog"
+  get_recentFailures: "SELECT count(*) FROM [OCTSystemMonitor].[System_Monitor].[SystemMonitorResults] where created > DATEADD(HOUR, -3, GETDATE()) and result='failed' and testname = '%s'"
+  insertResult: "INSERT INTO System_Monitor.SystemMonitorResults VALUES ('%s','%s','%s','%s')"
+  logEvent: "INSERT INTO System_Monitor.SystemMonitorLog VALUES ('%s','%s','%s','%s')"
+
+chromedriver_path: assets/chromedriver.exe
+
+db_connections:
+  database_name:
+    driver: "SQL Server"
+    server: server_name
+    auth: windows
+  another_database:
+    driver: "SQL Server"
+    server: server_name
+    auth: windows
+  oct-idm:
+    driver: "SQL Server"
+    server: azure_seerver_name
+    auth: azure

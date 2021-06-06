@@ -6,7 +6,7 @@ class Application_Services():
     def __init__(self, config):
         """Controls processes"""
 
-        self.config = config["Application_Services"]
+        self.config = config["app-services"]
 
         self.response = {}
         
@@ -51,7 +51,7 @@ class Application_Services():
                 for service in self.config["services"][application][server]:
                     if service not in actualServices:
                         self.response["result"] = "failed"
-                        self.response["message"] += "Cannot find: " + application + " | " + server + " | " + service + ". "
+                        self.response["message"] += "\nCannot find: " + application + " | " + server + " | " + service + ". "
                 
                 timeNow = str( datetime.now().time() )
                 
@@ -61,13 +61,13 @@ class Application_Services():
                     if service.Name in self.config["services-exceptions"]:
                         if timeNow > self.config["services-exceptions"][service.Name]["start"] and timeNow < self.config["services-exceptions"][service.Name]["end"]:
                             print("Skipping: " + str( service.Name ))
-                            self.response["message"] += service.Name + ": Not running but caught as exception from config, no action needed."
+                            self.response["message"] += service.Name + ": Caught as exception from config."
                             continue
                             
                     # If service in list of services
                     if service.Name in self.config["services"][application][server]:
                         if service.State != "Running": 
-                            self.response["message"] += application + " | " + server + " | " + service.Name + " | " + service.State + ". "
+                            self.response["message"] += "\n" + application + " | " + server + " | " + service.Name + " | " + service.State + ". "
                             self.response["result"] = "failed"
 
                         self.response["output"] += application + " | " + server + " | " + service.Name + " | " + service.State + ". "
